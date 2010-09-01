@@ -49,17 +49,17 @@ module Faker
 
       def street_address(include_secondary = false)
         Faker.numerify([
-          '##### %s' % street_name,
-          '#### %s' % street_name,
-          '### %s' % street_name
-        ].rand + (include_secondary ? ' ' + secondary_address : ''))
+            '##### %s' % street_name,
+            '#### %s' % street_name,
+            '### %s' % street_name
+          ].rand + (include_secondary ? ' ' + secondary_address : ''))
       end
 
       def secondary_address
         Faker.numerify([
-          'Apt. ###',
-          'Suite ###'
-        ].rand)
+            'Apt. ###',
+            'Suite ###'
+          ].rand)
       end
 
       # UK Variants
@@ -71,12 +71,25 @@ module Faker
         ['England', 'Scotland', 'Wales', 'Northern Ireland'].rand
       end
 
-      def uk_postcode
-        Faker.bothify([
-          '??# #??',
-          '??## #??'
-        ].rand).upcase
+
+      #Options:
+      #Strict - returns a postcode which is more likely to be an actual uk postcode according to: http://www.cabinetoffice.gov.uk/govtalk/schemasstandards/e-gif/datastandards/address/postcode.aspx
+      def uk_postcode(options = {:strict => false})
+        if options[:strict]
+          postcode = uk_postcode
+          if postcode =~ /(GIR 0AA|[A-PR-UWYZ]([0-9]{1,2}|([A-HK-Y][0-9]|[A-HK-Y][0-9]([0-9]|[ABEHMNPRV-Y]))|[0-9][A-HJKPS-UW]) [0-9][ABD-HJLNP-UW-Z]{2})/
+            return postcode
+          else
+            uk_postcode(:strict => true)
+          end
+        else
+          Faker.bothify([
+              '??# #??',
+              '??## #??'
+            ].rand).upcase
+        end
       end
+
     end
   end
 end
